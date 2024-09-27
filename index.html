@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Global News Hub</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			line-height: 1.6;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
+
+		header {
+			background: linear-gradient(135deg, #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%);
+			color: white;
+			padding: 1rem 0;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		.header-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0 20px;
+		}
+
+		.logo {
+			display: flex;
+			align-items: center;
+		}
+
+		.logo img {
+			width: 50px;
+			height: 50px;
+			margin-right: 10px;
+		}
+
+		.site-title {
+			font-size: 1.8em;
+			font-weight: bold;
+			margin: 0;
+		}
+
+		nav ul {
+			list-style-type: none;
+			padding: 0;
+			display: flex;
+		}
+
+		nav ul li {
+			margin-left: 20px;
+		}
+
+		nav ul li a {
+			color: white;
+			text-decoration: none;
+			font-weight: bold;
+			transition: color 0.3s ease;
+		}
+
+		nav ul li a:hover {
+			color: #ffd700;
+		}
+
+		.news-container {
+			max-width: 800px;
+			margin: 20px auto;
+			padding: 0 20px;
+		}
+
+		.news-item {
+			background-color: #fff;
+			border-radius: 5px;
+			padding: 20px;
+			margin-bottom: 20px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease;
+		}
+
+		.news-item:hover {
+			transform: translateY(-5px);
+		}
+
+		.news-item h2 {
+			margin-top: 0;
+			color: #333;
+		}
+
+		.news-item p {
+			margin-bottom: 10px;
+		}
+
+		.news-item .meta {
+			font-size: 0.9em;
+			color: #666;
+		}
+
+		.news-item .content {
+			margin-top: 15px;
+		}
+
+		.news-item .source {
+			text-align: right;
+			font-style: italic;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="header-container">
+			<div class="logo">
+				<h1 class="site-title">Global News Hub</h1>
+			</div>
+			<nav>
+				<ul>
+					<li><a href="#">Home</a></li>
+					<li><a href="#">Categories</a></li>
+					<li><a href="#">About</a></li>
+					<li><a href="#">Contact</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="news-container" id="newsContainer"></div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			fetch('http://127.0.0.1:8000/noticias')
+				.then(response => response.json())
+				.then(data => {
+					const newsContainer = document.getElementById('newsContainer');
+					data.forEach(article => {
+						const articleElement = document.createElement('div');
+						articleElement.className = 'news-item';
+						articleElement.innerHTML = `
+                            <h2>${article.titulo}</h2>
+                            <p class="meta">Por ${article.autor} | ${article.fecha_publicacion} | ${article.categoria}</p>
+                            <p>${article.descripcion}</p>
+                            <div class="content">${article.contenido}</div>
+                            <p class="source">Fuente: <a href="${article.enlace}" target="_blank">${article.fuente}</a></p>
+                        `;
+						newsContainer.appendChild(articleElement);
+					});
+				})
+				.catch(error => {
+					console.error('Error fetching news:', error);
+					const newsContainer = document.getElementById('newsContainer');
+					newsContainer.innerHTML = '<p>Error al cargar las noticias. Por favor, intente más tarde.</p>';
+				});
+		});
+	</script>
+</body>
+
+</html>
